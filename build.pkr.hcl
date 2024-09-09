@@ -83,7 +83,10 @@ build {
   post-processors {
     post-processor "docker-tag" {
         repository =  "${var.docker_hub_org}/${var.repo}"
-        tag = [var.tag]
+        tags = [
+          "latest",
+          var.tag
+        ]
       }
     post-processor "docker-push" {
         login_username = var.login_username
