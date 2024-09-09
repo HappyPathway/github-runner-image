@@ -84,7 +84,6 @@ build {
     post-processor "docker-tag" {
         repository =  "${var.login_username}/${var.repo}"
         tags = [
-          "latest",
           var.tag
         ]
       }
