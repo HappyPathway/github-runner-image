@@ -90,8 +90,10 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: packer build
+        env:
+          PACKER_LOG: 1
         run: |
-          packer build -debug \
+          packer build \
           -var login_username=${{ vars.DOCKERHUB_USER }} \
           -var login_password=${{ secrets.DOCKERHUB_TOKEN }} \
           -var repo=${{ vars.docker_repo }} \
