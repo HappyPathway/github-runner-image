@@ -4,6 +4,7 @@ apt-get install -y software-properties-common
 add-apt-repository -y ppa:git-core/ppa 
 apt-get update -y 
 apt-get install -y --no-install-recommends \
+    bash \
     build-essential \
     bison \
     curl \
