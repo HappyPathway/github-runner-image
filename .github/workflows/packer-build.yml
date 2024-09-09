@@ -49,7 +49,6 @@ jobs:
           -var repo=${{ vars.docker_repo }} \
           -var tag=${{ steps.vars.outputs.sha_short }} \
           -var source_image=${{ vars.source_image }} \
-          -var docker_hub_org=${{ vars.DOCKERHUB_USER }} \
           build.pkr.hcl
 
       # Runs a single command using the runners shell
@@ -61,5 +60,4 @@ jobs:
           -var repo=${{ vars.docker_repo }} \
           -var tag=${{ steps.vars.outputs.sha_short }} \
           -var source_image=${{ vars.source_image }} \
-          -var docker_hub_org=${{ vars.DOCKERHUB_USER }} \
           build.pkr.hcl
