@@ -75,8 +75,7 @@ build {
   provisioner shell {
     inline = [
       "chmod +x /tmp/buildscript",
-      "/tmp/buildscript",
-      "rm /tmp/buildscript"
+      "/tmp/buildscript"
     ]
   }
 
