@@ -87,7 +87,6 @@ build {
           "latest",
           var.tag
         ]
-        tag = ["latest"]
       }
     post-processor "docker-push" {
       login_password = var.login_password
