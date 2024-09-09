@@ -4,7 +4,6 @@ apt-get install -y software-properties-common
 add-apt-repository -y ppa:git-core/ppa 
 apt-get update -y 
 apt-get install -y --no-install-recommends \
-    bash \
     build-essential \
     bison \
     curl \
@@ -52,6 +51,6 @@ group=actions
 gid=1000
 
 groupadd -g $${gid} $${group}
-useradd -u $${uid} -g $${group} -s /bin/bash -m $${user}
+useradd -u $${uid} -g $${group} -m $${user}
 chown -R $${uid}:$${gid} /actions-runner /opt/hostedtoolcache
 
