@@ -18,16 +18,53 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
       - uses: actions/checkout@v4
 
-      - name: Set outputs
-        id: vars
-        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-        
       - name: Setup HashiCorp Packer
         # You may pin to the exact commit or the version.
         # uses: hashicorp/setup-packer@1aa358be5cf73883762b302a3a03abd66e75b232
         uses: hashicorp/setup-packer@v3.1.0
+        
+      - name: Download GTag
+        run: |
+          curl -sSL https://raw.githubusercontent.com/HappyPathway/centralized-actions/main/gtag.py -o gtag.py
+          curl -sSL https://raw.githubusercontent.com/HappyPathway/centralized-actions/main/gtag_requirements.txt -o requirements.txt
+            
+      - name: setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.11'
+          cache: pip
+      
+      - name: install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+      
+      - name: git fetch --unshallow --tags
+        run: git fetch --unshallow --tags
+
+      - name: get tags
+        run: git tag --list
+
+      - name: GTag (Minor)
+        if: ${{ inputs.minor == true }}
+        run: |
+          echo "next_tag=$(python gtag.py --minor)" >> $GITHUB_ENV 
+
+      - name: GTag (Major)
+        if: ${{ inputs.major == true }}
+        run: |
+          echo "next_tag=$(python gtag.py --major)" >> $GITHUB_ENV 
+
+      - name: GTag (Patch)
+        if: ${{ inputs.patch == true }}
+        run: |
+          echo "next_tag=$(python gtag.py --patch)" >> $GITHUB_ENV 
 
       - name: Docker Login
         # You may pin to the exact commit or the version.
@@ -47,7 +84,7 @@ jobs:
           -var login_username=${{ vars.DOCKERHUB_USER }} \
           -var login_password=${{ secrets.DOCKERHUB_TOKEN }} \
           -var repo=${{ vars.docker_repo }} \
-          -var tag=${{ steps.vars.outputs.sha_short }} \
+          -var tag=${{ env.next_tag }} \
           -var source_image=${{ vars.source_image }} \
           build.pkr.hcl
 
@@ -58,6 +95,17 @@ jobs:
           -var login_username=${{ vars.DOCKERHUB_USER }} \
           -var login_password=${{ secrets.DOCKERHUB_TOKEN }} \
           -var repo=${{ vars.docker_repo }} \
-          -var tag=${{ steps.vars.outputs.sha_short }} \
+          -var tag=${{ env.next_tag }} \
           -var source_image=${{ vars.source_image }} \
           build.pkr.hcl
+          
+      - name: set tag
+        run: |
+          remote_repo="https://${{inputs.github_username}}:${{secrets.GH_TOKEN}}@${{ inputs.github_server }}/${{ github.repository }}.git"
+          git remote add repo ${remote_repo}
+          git config --global user.email "${{inputs.github_email}}"
+          git config --global user.name "${{inputs.github_username}}"
+          git tag -a ${{ env.next_tag }} -m "Release ${{ env.next_tag }}"
+          git push --tags -u repo
+     
+      
