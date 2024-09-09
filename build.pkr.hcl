@@ -56,6 +56,7 @@ source "docker" "image" {
 
 build {
   name    = var.repo
+  fix_upload_owner = true
   sources = [
     "source.docker.image"
   ]
