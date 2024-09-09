@@ -45,6 +45,7 @@ variable vars_file {
 
 source "docker" "image" {
   image  = var.source_image
+  fix_upload_owner = true
   commit = true
   changes = [
       "USER actions",
@@ -56,7 +57,6 @@ source "docker" "image" {
 
 build {
   name    = var.repo
-  fix_upload_owner = true
   sources = [
     "source.docker.image"
   ]
