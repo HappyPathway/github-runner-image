@@ -48,6 +48,7 @@ jobs:
           -var login_password=${{ secrets.DOCKERHUB_TOKEN }} \
           -var repo=${{ vars.docker_repo }} \
           -var tag=${{ steps.vars.outputs.sha_short }} \
+          -var source_image=${{ vars.source_image }} \
           build.pkr.hcl
 
       # Runs a single command using the runners shell
@@ -58,5 +59,6 @@ jobs:
           -var login_password=${{ secrets.DOCKERHUB_TOKEN }} \
           -var repo=${{ vars.docker_repo }} \
           -var tag=${{ steps.vars.outputs.sha_short }} \
+          -var source_image=${{ vars.source_image }} \
           build.pkr.hcl
 
