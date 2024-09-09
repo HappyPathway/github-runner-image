@@ -49,18 +49,16 @@ jobs:
           -var repo=${{ vars.docker_repo }} \
           -var tag=${{ steps.vars.outputs.sha_short }} \
           -var source_image=${{ vars.source_image }} \
-          -debug \
           build.pkr.hcl
 
       # Runs a single command using the runners shell
       - name: packer build
         run: |
-          packer build \
+          packer build -debug \
           -var login_username=${{ vars.DOCKERHUB_USER }} \
           -var login_password=${{ secrets.DOCKERHUB_TOKEN }} \
           -var repo=${{ vars.docker_repo }} \
           -var tag=${{ steps.vars.outputs.sha_short }} \
           -var source_image=${{ vars.source_image }} \
-          -debug \
           build.pkr.hcl
 
