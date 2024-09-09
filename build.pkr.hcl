@@ -89,11 +89,7 @@ build {
         ]
         tag = ["latest"]
       }
-    post-processor "docker-push" {
-        login_username = var.login_username
-        login_password = var.login_password
-        login = true
-      }
+    post-processor "docker-push" {}
   }
 }
 
