@@ -19,6 +19,10 @@ variable repo {
   type = string
 }
 
+variable tag {
+  type = string
+}
+
 variable docker_hub_org {
   type = string
   default = "happypathway"
