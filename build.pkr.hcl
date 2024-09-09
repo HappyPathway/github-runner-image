@@ -11,6 +11,10 @@ variable login_password {
   type = string
 }
 
+variable tag {
+  type = string
+}
+
 variable login_username {
   type = string
 }
@@ -69,7 +73,7 @@ build {
   post-processors {
     post-processor "docker-tag" {
         repository =  "${var.docker_hub_org}/${var.repo}"
-        tag = ["latest"]
+        tag = [var.tag]
       }
     post-processor "docker-push" {
         login_username = var.login_username

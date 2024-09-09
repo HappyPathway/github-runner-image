@@ -1,5 +1,4 @@
 # This is a basic workflow to help you get started with Actions
-
 name: Packer Build
 
 # Controls when the workflow will run
@@ -21,6 +20,10 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
+      - name: Set outputs
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+        
       - name: Setup HashiCorp Packer
         # You may pin to the exact commit or the version.
         # uses: hashicorp/setup-packer@1aa358be5cf73883762b302a3a03abd66e75b232
@@ -44,6 +47,7 @@ jobs:
           -var login_username=${{ vars.DOCKERHUB_USER }} \
           -var login_password=${{ secrets.DOCKERHUB_TOKEN }} \
           -var repo=${{ vars.docker_repo }} \
+          -var tag=${{ steps.vars.outputs.sha_short }} \
           build.pkr.hcl
 
       # Runs a single command using the runners shell
@@ -53,5 +57,6 @@ jobs:
           -var login_username=${{ vars.DOCKERHUB_USER }} \
           -var login_password=${{ secrets.DOCKERHUB_TOKEN }} \
           -var repo=${{ vars.docker_repo }} \
+          -var tag=${{ steps.vars.outputs.sha_short }} \
           build.pkr.hcl
 
