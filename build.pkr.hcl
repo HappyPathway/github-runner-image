@@ -64,7 +64,7 @@ build {
       var.file_template,
       jsondecode(file(var.vars_file))
     )
-    destination = "/tmp/buildscript"
+    destination = "/opt/buildscript"
   }
 
   provisioner file {
@@ -74,8 +74,9 @@ build {
   
   provisioner shell {
     inline = [
-      "chmod +x /tmp/buildscript",
-      "/tmp/buildscript"
+      "chmod +x /opt/buildscript",
+      "/opt/buildscript",
+      "rm /opt/buildscript"
     ]
   }
 
