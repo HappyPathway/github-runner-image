@@ -11,10 +11,6 @@ variable login_password {
   type = string
 }
 
-variable tag {
-  type = string
-}
-
 variable login_username {
   type = string
 }
