@@ -42,6 +42,11 @@ variable vars_file {
 source "docker" "image" {
   image  = var.source_image
   commit = true
+  changes = [
+      "USER actions",
+      "WORKDIR /actions-runner",
+      "ENTRYPOINT /opt/entrypoint.sh"
+    ]
 }
 
 
@@ -58,6 +63,11 @@ build {
     destination = "/tmp/buildscript"
   }
 
+  provisioner file {
+    source      = "entrypoint.sh"
+    destination = "/opt/entrypoint.sh"
+  }
+  
   provisioner shell {
     inline = [
       "chmod +x /tmp/buildscript",
