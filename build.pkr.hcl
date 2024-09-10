@@ -79,6 +79,7 @@ build {
       "/opt/buildscript",
       "rm /opt/buildscript"
     ]
+    skip_clean = true
   }
 
   post-processors {
