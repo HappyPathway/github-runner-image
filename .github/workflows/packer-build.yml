@@ -52,17 +52,17 @@ jobs:
         run: git tag --list
 
       - name: GTag (Minor)
-        if: ${{ vars.increment_version == "minor" }}
+        if: vars.increment_version == "minor"
         run: |
           echo "next_tag=$(python gtag.py --minor)" >> $GITHUB_ENV 
 
       - name: GTag (Major)
-        if: ${{ vars.increment_version == "major" }}
+        if: vars.increment_version == "major"
         run: |
           echo "next_tag=$(python gtag.py --major)" >> $GITHUB_ENV 
 
       - name: GTag (Patch)
-        if: ${{ vars.increment_version == "patch" }}
+        if: vars.increment_version == "patch"
         run: |
           echo "next_tag=$(python gtag.py --patch)" >> $GITHUB_ENV 
 
