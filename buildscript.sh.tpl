@@ -34,14 +34,16 @@ apt-get install -y --no-install-recommends \
 ln -sf /usr/bin/python3 /usr/bin/python 
 ln -sf /usr/bin/pip3 /usr/bin/pip 
 rm -rf /var/lib/apt/lists/*
-mkdir -p actions-runner/_work
+mkdir -p /actions-runner/_work
 
 echo "WHICH BASH" $(which bash)
 ARCH="x64"
 GH_RUNNER_VERSION=$(curl -fsSL "https://api.github.com/repos/actions/runner/releases/latest" | jq -r '.tag_name' | cut -c2-) 
 curl -O -L "https://github.com/actions/runner/releases/download/v$${GH_RUNNER_VERSION}/actions-runner-linux-$${ARCH}-$${GH_RUNNER_VERSION}.tar.gz" 
-tar -xzf "actions-runner-linux-$${ARCH}-$${GH_RUNNER_VERSION}.tar.gz" 
-rm -f "actions-runner-linux-$${ARCH}-$${GH_RUNNER_VERSION}.tar.gz"
+curdir=${PWD}
+cd /actions-runner/
+tar -xzf "${curdir}/actions-runner-linux-$${ARCH}-$${GH_RUNNER_VERSION}.tar.gz" 
+rm -f "${curdir}/actions-runner-linux-$${ARCH}-$${GH_RUNNER_VERSION}.tar.gz"
 mkdir /opt/hostedtoolcache
 chmod +x /opt/entrypoint.sh
 
