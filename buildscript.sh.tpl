@@ -40,10 +40,10 @@ echo "WHICH BASH" $(which bash)
 ARCH="x64"
 GH_RUNNER_VERSION=$(curl -fsSL "https://api.github.com/repos/actions/runner/releases/latest" | jq -r '.tag_name' | cut -c2-) 
 curl -O -L "https://github.com/actions/runner/releases/download/v$${GH_RUNNER_VERSION}/actions-runner-linux-$${ARCH}-$${GH_RUNNER_VERSION}.tar.gz" 
-curdir=${PWD}
+curdir=$${PWD}
 cd /actions-runner/
-tar -xzf "${curdir}/actions-runner-linux-$${ARCH}-$${GH_RUNNER_VERSION}.tar.gz" 
-rm -f "${curdir}/actions-runner-linux-$${ARCH}-$${GH_RUNNER_VERSION}.tar.gz"
+tar -xzf "$${curdir}/actions-runner-linux-$${ARCH}-$${GH_RUNNER_VERSION}.tar.gz" 
+rm -f "$${curdir}/actions-runner-linux-$${ARCH}-$${GH_RUNNER_VERSION}.tar.gz"
 mkdir /opt/hostedtoolcache
 chmod +x /opt/entrypoint.sh
 
