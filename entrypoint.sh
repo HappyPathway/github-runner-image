@@ -7,7 +7,7 @@ RUNNER_NAME=${RUNNER_NAME_FULL:0:64}
 
 # Support for setup-python
 AGENT_TOOLSDIRECTORY=/opt/hostedtoolscache
-
+cd /actions-runner
 ./config.sh \
     --unattended \
     --url "${REPO_URL}" \
