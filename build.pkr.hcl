@@ -76,7 +76,7 @@ build {
   
   provisioner shell {
     inline = [
-      "chmod +x /opt/entrypoint.sh",
+      "chmod +x /opt/entrypoint.py",
       "chmod +x /opt/buildscript",
       "/opt/buildscript",
       "rm /opt/buildscript"
