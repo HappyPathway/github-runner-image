@@ -91,10 +91,10 @@ jobs:
           
       - name: set tag
         run: |
-          remote_repo="https://${{vars.github_username}}:${{secrets.GH_TOKEN}}@${{ vars.github_server }}/${{ github.repository }}.git"
+          remote_repo="https://${{vars.gh_username}}:${{secrets.GH_TOKEN}}@${{ vars.gh_server }}/${{ github.repository }}.git"
           git remote add repo ${remote_repo}
-          git config --global user.email "${{vars.github_email}}"
-          git config --global user.name "${{vars.github_username}}"
+          git config --global user.email "${{vars.gh_email}}"
+          git config --global user.name "${{vars.gh_username}}"
           git tag -a ${{ env.next_tag }} -m "Release ${{ env.next_tag }}"
           git push --tags -u repo
      
