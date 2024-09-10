@@ -36,6 +36,7 @@ ln -sf /usr/bin/pip3 /usr/bin/pip
 rm -rf /var/lib/apt/lists/*
 mkdir -p actions-runner/_work
 
+echo "WHICH BASH" $(which bash)
 ARCH="x64"
 GH_RUNNER_VERSION=$(curl -fsSL "https://api.github.com/repos/actions/runner/releases/latest" | jq -r '.tag_name' | cut -c2-) 
 curl -O -L "https://github.com/actions/runner/releases/download/v$${GH_RUNNER_VERSION}/actions-runner-linux-$${ARCH}-$${GH_RUNNER_VERSION}.tar.gz" 
