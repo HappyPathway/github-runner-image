@@ -1,0 +1,138 @@
+---
+- name: Setup GitHub Actions Runner
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Set DEBIAN_FRONTEND to noninteractive
+      ansible.builtin.shell: export DEBIAN_FRONTEND=noninteractive
+
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install required packages
+      ansible.builtin.apt:
+        name:
+          - software-properties-common
+          - build-essential
+          - bison
+          - curl
+          - ca-certificates
+          - dnsutils
+          - git
+          - jq
+          - libffi-dev
+          - libgdbm-dev
+          - libreadline-dev
+          - libssl-dev
+          - libunwind8
+          - libyaml-dev
+          - locales
+          - python3-pip
+          - rsync
+          - supervisor
+          - sudo
+          - time
+          - tzdata
+          - unzip
+          - upx
+          - wget
+          - zip
+          - zlib1g-dev
+          - zstd
+        state: present
+        install_recommends: no
+
+    - name: Add Git PPA repository
+      ansible.builtin.apt_repository:
+        repo: ppa:git-core/ppa
+
+    - name: Update apt cache after adding Git PPA
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Create symbolic link for python3
+      ansible.builtin.file:
+        src: /usr/bin/python3
+        dest: /usr/bin/python
+        state: link
+
+    - name: Create symbolic link for pip3
+      ansible.builtin.file:
+        src: /usr/bin/pip3
+        dest: /usr/bin/pip
+        state: link
+
+    - name: Clean up apt cache
+      ansible.builtin.apt:
+        autoclean: yes
+
+    - name: Create actions-runner/_work directory
+      ansible.builtin.file:
+        path: /actions-runner/_work
+        state: directory
+
+    - name: Set architecture variable
+      ansible.builtin.set_fact:
+        ARCH: x64
+
+    - name: Get latest GitHub Actions Runner version
+      ansible.builtin.shell: |
+        curl -fsSL "https://api.github.com/repos/actions/runner/releases/latest" | jq -r '.tag_name' | cut -c2-
+      register: gh_runner_version
+
+    - name: Download GitHub Actions Runner
+      ansible.builtin.get_url:
+        url: "https://github.com/actions/runner/releases/download/v{{ gh_runner_version.stdout }}/actions-runner-linux-{{ ARCH }}-{{ gh_runner_version.stdout }}.tar.gz"
+        dest: "/tmp/actions-runner-linux-{{ ARCH }}-{{ gh_runner_version.stdout }}.tar.gz"
+
+    - name: Extract GitHub Actions Runner
+      ansible.builtin.unarchive:
+        src: "/tmp/actions-runner-linux-{{ ARCH }}-{{ gh_runner_version.stdout }}.tar.gz"
+        dest: /actions-runner
+        remote_src: yes
+
+    - name: Remove downloaded tarball
+      ansible.builtin.file:
+        path: "/tmp/actions-runner-linux-{{ ARCH }}-{{ gh_runner_version.stdout }}.tar.gz"
+        state: absent
+
+    - name: Create /opt/hostedtoolcache directory
+      ansible.builtin.file:
+        path: /opt/hostedtoolcache
+        state: directory
+
+    - name: Make entrypoint.sh executable
+      ansible.builtin.file:
+        path: /opt/entrypoint.sh
+        mode: '0755'
+
+    - name: Add sudoers entry for ALL users
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers
+        line: 'ALL            ALL = (ALL) NOPASSWD: ALL'
+        create: yes
+
+    - name: Create actions group
+      ansible.builtin.group:
+        name: actions
+        gid: 1000
+
+    - name: Create actions user
+      ansible.builtin.user:
+        name: actions
+        uid: 1000
+        group: actions
+        shell: /bin/bash
+        create_home: yes
+
+    - name: Change ownership of /actions-runner and /opt/hostedtoolcache
+      ansible.builtin.file:
+        path: "{{ item }}"
+        owner: actions
+        group: actions
+        recurse: yes
+      with_items:
+        - /actions-runner
+        - /opt/hostedtoolcache

@@ -1,17 +1,33 @@
 packer {
   required_plugins {
+    # Docker plugin for Packer
     docker = {
-      version = ">= 1.0.8"
-      source = "github.com/hashicorp/docker"
+      source  = "github.com/hashicorp/docker"
+      version = "~> 1"
+    }
+    # Ansible plugin for Packer
+    ansible = {
+      version = "v1.1.1"
+      source  = "github.com/hashicorp/ansible"
+    }
+    # Amazon plugin for Packer
+    amazon = {
+      version = ">= 1.2.8"
+      source  = "github.com/hashicorp/amazon"
     }
   }
 }
 
-variable login_password {
+variable source_image {
+  type    = string
+  default = "ubuntu:latest"
+}
+
+variable aws_account_id {
   type = string
 }
 
-variable login_username {
+variable aws_region {
   type = string
 }
 
@@ -23,74 +39,57 @@ variable tag {
   type = string
 }
 
-variable docker_hub_org {
+variable dest_docker_repo {
   type = string
-  default = "happypathway"
 }
 
-variable source_image {
-  type = string
-  default = "ubuntu:latest"
-} 
 
-variable file_template {
-  type = string
-  default = "buildscript.sh.tpl"
-}
-
-variable vars_file {
-  type = string
-  default = "vars.json"
+locals {
+  aws_account_id   = var.aws_account_id
+  aws_region       = var.aws_region
+  dest_image       = var.repo
+  dest_tag         = var.tag
+  dest_docker_repo = var.dest_docker_repo
 }
 
 source "docker" "image" {
   image  = var.source_image
   commit = true
   changes = [
-      "USER actions",
-      "WORKDIR /actions-runner",
-      "ENTRYPOINT /opt/entrypoint.sh"
-    ]
+    "USER actions",
+    "WORKDIR /actions-runner",
+    "ENTRYPOINT /opt/entrypoint.sh"
+  ]
 }
 
 
 build {
-  name    = var.repo
+  name = var.repo
   sources = [
     "source.docker.image"
   ]
-  provisioner "file" {
-    content = templatefile(
-      var.file_template,
-      jsondecode(file(var.vars_file))
-    )
-    destination = "/tmp/buildscript"
-  }
 
   provisioner file {
     source      = "entrypoint.sh"
     destination = "/opt/entrypoint.sh"
   }
-  
-  provisioner shell {
-    inline = [
-      "chmod +x /tmp/buildscript",
-      "/tmp/buildscript",
-      "rm /tmp/buildscript"
-    ]
+
+  provisioner "ansible" {
+    playbook_file = "github_runner.yaml"
   }
 
   post-processors {
-    post-processor "docker-tag" {
-        repository =  "${var.login_username}/${var.repo}"
-        tags = [
-          var.tag
-        ]
+
+    post-processors {
+      post-processor "docker-tag" {
+        repository = "${local.aws_account_id}.dkr.ecr.${local.aws_region}.amazonaws.com/${local.dest_docker_repo}/${local.dest_image}"
+        tag        = [local.dest_tag]
       }
-    post-processor "docker-push" {
-      login_password = var.login_password
-      login_username = var.login_username
-      login = true
+
+      post-processor "docker-push" {
+        ecr_login    = true
+        login_server = "${local.aws_account_id}.dkr.ecr.${local.aws_region}.amazonaws.com"
+      }
     }
   }
 }
