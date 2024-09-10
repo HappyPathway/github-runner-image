@@ -50,7 +50,7 @@ source "docker" "image" {
   changes = [
       "USER actions",
       "WORKDIR /actions-runner",
-      "CMD [\"/usr/bin/bash\", \"/opt/entrypoint.sh\"]",
+      "CMD [\"/usr/bin/bash\", \"/opt/entrypoint.py\"]",
       "USER actions:actions"
     ]
 }
@@ -70,8 +70,8 @@ build {
   }
 
   provisioner file {
-    source      = "entrypoint.sh"
-    destination = "/opt/entrypoint.sh"
+    source      = "entrypoint.py"
+    destination = "/opt/entrypoint.py"
   }
   
   provisioner shell {
