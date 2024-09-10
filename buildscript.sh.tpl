@@ -47,11 +47,8 @@ chmod +x /opt/entrypoint.sh
 printf 'ALL            ALL = (ALL) NOPASSWD: ALL' >> /etc/sudoers
 
 user=actions
-uid=1000
 group=actions
-gid=1000
 
-groupadd -g $${gid} $${group}
-useradd -u $${uid} -g $${group} -m $${user}
-chown -R $${uid}:$${gid} /actions-runner /opt/hostedtoolcache
-
+groupadd $${group}
+useradd -g $${group} -m $${user}
+chown -R $${user}:$${group} /actions-runner /opt/hostedtoolcache
