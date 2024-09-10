@@ -77,17 +77,6 @@ jobs:
           -var tag=${{ env.next_tag }} \
           -var source_image=${{ vars.source_image }} \
           build.pkr.hcl
-
-      # Runs a single command using the runners shell
-      - name: packer build
-        run: |
-          packer build \
-          -var login_username=${{ vars.DOCKERHUB_USER }} \
-          -var login_password=${{ secrets.DOCKERHUB_TOKEN }} \
-          -var repo=${{ vars.docker_repo }} \
-          -var tag=${{ env.next_tag }} \
-          -var source_image=${{ vars.source_image }} \
-          build.pkr.hcl
           
       - name: set tag
         run: |
@@ -98,4 +87,15 @@ jobs:
           git tag -a ${{ env.next_tag }} -m "Release ${{ env.next_tag }}"
           git push --tags -u repo
      
+      # Runs a single command using the runners shell
+      - name: packer build
+        run: |
+          packer build \
+          -var login_username=${{ vars.DOCKERHUB_USER }} \
+          -var login_password=${{ secrets.DOCKERHUB_TOKEN }} \
+          -var repo=${{ vars.docker_repo }} \
+          -var tag=${{ env.next_tag }} \
+          -var source_image=${{ vars.source_image }} \
+          build.pkr.hcl
+
       
