@@ -80,8 +80,6 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: packer build
-        env:
-          PACKER_LOG: 1
         run: |
           packer build \
           -var login_username=${{ vars.DOCKERHUB_USER }} \
