@@ -43,7 +43,7 @@ curl -O -L "https://github.com/actions/runner/releases/download/v$${GH_RUNNER_VE
 curdir=${PWD}
 cd /actions-runner/
 tar -xzf "${curdir}/actions-runner-linux-$${ARCH}-$${GH_RUNNER_VERSION}.tar.gz" 
-rm -f "actions-runner-linux-$${ARCH}-$${GH_RUNNER_VERSION}.tar.gz"
+rm -f "${curdir}/actions-runner-linux-$${ARCH}-$${GH_RUNNER_VERSION}.tar.gz"
 mkdir /opt/hostedtoolcache
 chmod +x /opt/entrypoint.sh
 
