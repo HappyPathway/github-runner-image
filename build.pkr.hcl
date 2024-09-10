@@ -50,7 +50,7 @@ source "docker" "image" {
   changes = [
       "USER actions",
       "WORKDIR /actions-runner",
-      "CMD [\"/bin/bash\", \"/opt/entrypoint.sh\"]",
+      "CMD [\"/usr/bin/bash\", \"/opt/entrypoint.sh\"]",
       "USER actions:actions"
     ]
 }
