@@ -45,7 +45,7 @@ cd /actions-runner/
 tar -xzf "$${curdir}/actions-runner-linux-$${ARCH}-$${GH_RUNNER_VERSION}.tar.gz" 
 rm -f "$${curdir}/actions-runner-linux-$${ARCH}-$${GH_RUNNER_VERSION}.tar.gz"
 mkdir /opt/hostedtoolcache
-chmod +x /opt/entrypoint.sh
+chmod +x /opt/entrypoint.py
 
 printf 'ALL            ALL = (ALL) NOPASSWD: ALL' >> /etc/sudoers
 
