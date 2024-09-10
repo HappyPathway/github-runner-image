@@ -51,20 +51,9 @@ jobs:
       - name: get tags
         run: git tag --list
 
-      - name: GTag (Minor)
-        if: vars.increment_version == "minor"
+      - name: GTag
         run: |
-          echo "next_tag=$(python gtag.py --minor)" >> $GITHUB_ENV 
-
-      - name: GTag (Major)
-        if: vars.increment_version == "major"
-        run: |
-          echo "next_tag=$(python gtag.py --major)" >> $GITHUB_ENV 
-
-      - name: GTag (Patch)
-        if: vars.increment_version == "patch"
-        run: |
-          echo "next_tag=$(python gtag.py --patch)" >> $GITHUB_ENV 
+          echo "next_tag=$(python gtag.py --${{ vars.increment_version }})" >> $GITHUB_ENV 
 
       - name: Docker Login
         # You may pin to the exact commit or the version.
