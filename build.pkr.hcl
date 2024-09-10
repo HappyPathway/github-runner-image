@@ -54,6 +54,7 @@ locals {
 
 source "docker" "image" {
   image  = var.source_image
+  fix_upload_owner = true
   commit = true
   changes = [
     "USER actions",
@@ -68,11 +69,6 @@ build {
   sources = [
     "source.docker.image"
   ]
-
-  provisioner file {
-    source      = "entrypoint.sh"
-    destination = "/opt/entrypoint.sh"
-  }
 
   provisioner "ansible" {
     playbook_file = "github_runner.yaml"
