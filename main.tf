@@ -25,16 +25,6 @@ resource "aws_ecrpublic_repository" "github-runner" {
   }
 }
 
-data "github_repository" "github-runner" {
-  repository = "github-runner-image"
-}
-
-resource "github_actions_repository_variable" "repository_uri" {
-  repository = data.github_repository.github-runner.id
-  name       = "repo_data"
-  value      = aws_ecrpublic_repository.github-runner.repository_uri
-}
-
 output "repository_uri" {
   value = aws_ecrpublic_repository.github-runner.repository_uri
 }
@@ -49,4 +39,8 @@ output "aws_account_id" {
 
 output "region" {
   value = "us-east-1"
+}
+
+output "arn" {
+  value = aws_ecrpublic_repository.github-runner.arn
 }

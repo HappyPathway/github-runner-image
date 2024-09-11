@@ -16,6 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PACKER_GITHUB_API_TOKEN: ${{ secrets.GH_TOKEN }}
+      AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -41,6 +43,20 @@ jobs:
           python-version: '3.11'
           cache: pip
       
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3.1.2
+        with:
+          terraform_version: 1.9.1
+          cli_config_credentials_token: ${{ secrets.TFE_TOKEN }}
+          cli_config_credentials_hostname: app.terraform.io
+      
+      - name: terraform apply
+        run: terraform apply -auto-approve
+
+      - name: terraform output
+        id: terraform_output
+        run: echo "terraform_outputs=$(terraform output -json)" >> $GITHUB_OUTPUT
+
       - name: install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -71,9 +87,7 @@ jobs:
       - name: packer validate
         run: |
           packer validate \
-          -var login_username=${{ vars.DOCKERHUB_USER }} \
-          -var login_password=${{ secrets.DOCKERHUB_TOKEN }} \
-          -var repo=${{ vars.docker_repo }} \
+          -var repository_uri=${{ fromJson(steps.terraform_output.outputs.terraform_outputs).repository_uri }} \
           -var tag=${{ env.next_tag }} \
           -var source_image=${{ vars.source_image }} \
           build.pkr.hcl
@@ -91,9 +105,7 @@ jobs:
       - name: packer build
         run: |
           packer build \
-          -var login_username=${{ vars.DOCKERHUB_USER }} \
-          -var login_password=${{ secrets.DOCKERHUB_TOKEN }} \
-          -var repo=${{ vars.docker_repo }} \
+          -var repository_uri=${{ fromJson(steps.terraform_output.outputs.terraform_outputs).repository_uri }}
           -var tag=${{ env.next_tag }} \
           -var source_image=${{ vars.source_image }} \
           build.pkr.hcl

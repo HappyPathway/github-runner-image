@@ -23,33 +23,16 @@ variable source_image {
   default = "ubuntu:latest"
 }
 
-variable aws_account_id {
-  type = string
-}
-
-variable aws_region {
-  type = string
-}
-
-variable repo {
-  type = string
-}
-
 variable tag {
   type = string
 }
 
-variable dest_docker_repo {
+variable repository_uri {
   type = string
 }
 
-
 locals {
-  aws_account_id   = var.aws_account_id
-  aws_region       = var.aws_region
-  dest_image       = var.repo
-  dest_tag         = var.tag
-  dest_docker_repo = var.dest_docker_repo
+  repository_uri   = var.repository_uri
 }
 
 source "docker" "image" {
@@ -65,7 +48,7 @@ source "docker" "image" {
 
 
 build {
-  name = var.repo
+  name = "github-runner"
   sources = [
     "source.docker.image"
   ]
@@ -75,17 +58,14 @@ build {
   }
 
   post-processors {
+    post-processor "docker-tag" {
+      repository = var.repository_uri
+      tags       = [var.tag]
+    }
 
-    post-processors {
-      post-processor "docker-tag" {
-        repository = "${local.aws_account_id}.dkr.ecr.${local.aws_region}.amazonaws.com/${local.dest_docker_repo}/${local.dest_image}"
-        tag        = [local.dest_tag]
-      }
-
-      post-processor "docker-push" {
-        ecr_login    = true
-        login_server = "${local.aws_account_id}.dkr.ecr.${local.aws_region}.amazonaws.com"
-      }
+    post-processor "docker-push" {
+      ecr_login    = true
+      login_server = "https:/${var.repository_uri}"
     }
   }
 }
