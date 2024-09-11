@@ -115,9 +115,10 @@
         path: /opt/hostedtoolcache
         state: directory
 
-    - name: Make entrypoint.sh executable
-      ansible.builtin.file:
-        path: /opt/entrypoint.sh
+    - name: Create entrypoint.sh
+      ansible.builtin.copy:
+        src: entrypoint.sh
+        dest: /opt/entrypoint.sh
         mode: "0755"
 
     - name: Add sudoers entry for ALL users
