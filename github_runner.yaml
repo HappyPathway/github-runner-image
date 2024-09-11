@@ -23,6 +23,15 @@
     - name: Set DEBIAN_FRONTEND to noninteractive
       ansible.builtin.shell: export DEBIAN_FRONTEND=noninteractive
 
+    - name: Set DEBIAN_FRONTEND to noninteractive
+      ansible.builtin.environment:
+        DEBIAN_FRONTEND: noninteractive
+
+    - name: Preconfigure tzdata package
+      ansible.builtin.shell: |
+        echo 'tzdata tzdata/Areas select Etc' | debconf-set-selections
+        echo 'tzdata tzdata/Zones/Etc select UTC' | debconf-set-selections
+
     - name: Update apt cache
       ansible.builtin.apt:
         update_cache: yes
