@@ -50,7 +50,7 @@
           - supervisor
           - sudo
           - time
-          - tzdata
+          # - tzdata # tzdata is prompting, need noninteractive
           - unzip
           - upx
           - wget
