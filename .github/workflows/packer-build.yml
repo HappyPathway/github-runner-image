@@ -53,8 +53,8 @@ jobs:
           terraform_wrapper: false
       
       - name: terraform init
-        run: terraform init -upgrade
-
+        run: terraform init -upgrade -backend-config="bucket=${{ vars.gcs_state_bucket }}" -backend-config="prefix=${{ vars.state_prefix }}"
+  
       - name: terraform apply
         run: terraform apply -auto-approve
 
