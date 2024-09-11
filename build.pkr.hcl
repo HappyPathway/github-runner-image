@@ -57,6 +57,9 @@ build {
     inline = [
       "apt-get update && apt-get install -y python3-pip python3 sudo"
     ]
+    environment_vars = [
+      "DEBIAN_FRONTEND=noninteractive"
+    ]
   }
 
   provisioner "ansible" {

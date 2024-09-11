@@ -36,38 +36,40 @@
       ansible.builtin.apt:
         update_cache: yes
 
-    # - name: Install required packages
-    #   ansible.builtin.apt:
-    #     name:
-    #       - software-properties-common
-    #       - build-essential
-    #       - bison
-    #       - curl
-    #       - ca-certificates
-    #       - dnsutils
-    #       - git
-    #       - jq
-    #       - libffi-dev
-    #       - libgdbm-dev
-    #       - libreadline-dev
-    #       - libssl-dev
-    #       - libunwind8
-    #       - libyaml-dev
-    #       - locales
-    #       - python3-pip
-    #       - rsync
-    #       - supervisor
-    #       - sudo
-    #       - unzip
-    #       - upx
-    #       - wget
-    #       - zip
-    #       - zlib1g-dev
-    #       - zstd
-    #     state: present
-    #     install_recommends: no
-    #   environment:
-    #     DEBIAN_FRONTEND: noninteractive
+    - name: Install required packages
+      ansible.builtin.apt:
+        name:
+          - software-properties-common
+          - build-essential
+          - bison
+          - curl
+          - ca-certificates
+          - dnsutils
+          - git
+          - jq
+          - libffi-dev
+          - libgdbm-dev
+          - libreadline-dev
+          - libssl-dev
+          - libunwind8
+          - libyaml-dev
+          - locales
+          - python3-pip
+          - rsync
+          - supervisor
+          - sudo
+          - time
+          - tzdata
+          - unzip
+          - upx
+          - wget
+          - zip
+          - zlib1g-dev
+          - zstd
+        state: present
+        install_recommends: no
+      environment:
+        DEBIAN_FRONTEND: noninteractive
 
     - name: Add Git PPA repository
       ansible.builtin.apt_repository:
