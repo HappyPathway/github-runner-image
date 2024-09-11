@@ -58,8 +58,6 @@
           - rsync
           - supervisor
           - sudo
-          - time
-          # - tzdata # tzdata is prompting, need noninteractive
           - unzip
           - upx
           - wget
