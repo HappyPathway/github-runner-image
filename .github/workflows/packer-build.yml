@@ -59,7 +59,7 @@ jobs:
 
       - name: terraform output
         id: terraform_output
-        run: echo "terraform_outputs=$(terraform output -json)" >> $GITHUB_OUTPUT
+        run: echo "respository_uri=$(terraform output respository_uri)" >> $GITHUB_ENV
 
       - name: install dependencies
         run: |
@@ -91,7 +91,7 @@ jobs:
       - name: packer validate
         run: |
           packer validate \
-          -var repository_uri=${{ fromJson(steps.terraform_output.outputs.terraform_outputs).repository_uri }} \
+          -var repository_uri=${{ env.respository_uri }} \
           -var tag=${{ env.next_tag }} \
           -var source_image=${{ vars.source_image }} \
           build.pkr.hcl
@@ -109,7 +109,7 @@ jobs:
       - name: packer build
         run: |
           packer build \
-          -var repository_uri=${{ fromJson(steps.terraform_output.outputs.terraform_outputs).repository_uri }}
+          -var repository_uri=${{ env.respository_uri }} \
           -var tag=${{ env.next_tag }} \
           -var source_image=${{ vars.source_image }} \
           build.pkr.hcl
