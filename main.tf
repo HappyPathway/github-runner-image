@@ -22,22 +22,30 @@ resource "aws_ecrpublic_repository" "github-runner" {
   }
 }
 
+locals {
+  repository_uri = aws_ecrpublic_repository.github-runner.repository_uri
+  repository_id  = aws_ecrpublic_repository.github-runner.id
+  aws_account_id = data.aws_caller_identity.current.account_id
+  region         = "us-east-1"
+  arn            = aws_ecrpublic_repository.github-runner.arn
+
+}
 output "repository_uri" {
-  value = aws_ecrpublic_repository.github-runner.repository_uri
+  value = issensitive(local.repository_id) ? nonsensitive(local.repository_uri) : local.repository_uri
 }
 
 output "reppsitory_id" {
-  value = aws_ecrpublic_repository.github-runner.id
+  value = issensitive(local.repository_id) ? nonsensitive(local.repository_id) : local.repository_id
 }
 
 output "aws_account_id" {
-  value = data.aws_caller_identity.current.account_id
+  value = issensitive(local.aws_account_id) ? nonsensitive(local.aws_account_id) : local.aws_account_id
 }
 
 output "region" {
-  value = "us-east-1"
+  value = issensitive(local.region) ? nonsensitive(local.region) : local.region
 }
 
 output "arn" {
-  value = aws_ecrpublic_repository.github-runner.arn
+  value = issensitive(local.arn) ? nonsensitive(local.arn) : local.arn
 }
