@@ -25,6 +25,12 @@ jobs:
         with:
           node-version: 16
 
+      - name: 'Google Auth'
+        id: 'auth' 
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
+          
       - uses: actions/checkout@v4
 
       - name: Setup HashiCorp Packer
