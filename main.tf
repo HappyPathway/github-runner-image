@@ -1,5 +1,4 @@
 provider "aws" {
-  alias  = "us_east_1"
   region = "us-east-1"
 }
 
@@ -7,8 +6,6 @@ data "aws_caller_identity" "current" {}
 
 
 resource "aws_ecrpublic_repository" "github-runner" {
-  provider = aws.us_east_1
-
   repository_name = "github-runner"
 
   catalog_data {

@@ -51,8 +51,8 @@ jobs:
           cli_config_credentials_hostname: app.terraform.io
       
       - name: terraform init
-        run: terraform init
-        
+        run: terraform init -upgrade
+
       - name: terraform apply
         run: terraform apply -auto-approve
 
