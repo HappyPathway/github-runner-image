@@ -53,6 +53,12 @@ build {
     "source.docker.image"
   ]
 
+  provisioner "shell" {
+    inline = [
+      "apt-get update && apt-get install -y python3-pip python3 sudo"
+    ]
+  }
+
   provisioner "ansible" {
     playbook_file = "github_runner.yaml"
   }
