@@ -59,6 +59,8 @@
           - zstd
         state: present
         install_recommends: no
+      environment:
+        DEBIAN_FRONTEND: noninteractive
 
     - name: Add Git PPA repository
       ansible.builtin.apt_repository:
