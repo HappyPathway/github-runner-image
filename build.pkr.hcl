@@ -68,13 +68,13 @@ build {
 
   post-processors {
     post-processor "docker-tag" {
-      repository = var.repository_uri
+      repository = "${var.repository_uri}/github-runner"
       tags       = [var.tag]
     }
 
     post-processor "docker-push" {
       ecr_login    = true
-      login_server = "https:/${var.repository_uri}"
+      login_server = "${var.repository_uri}"
     }
   }
 }
