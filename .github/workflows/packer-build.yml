@@ -50,6 +50,9 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TFE_TOKEN }}
           cli_config_credentials_hostname: app.terraform.io
       
+      - name: terraform init
+        run: terraform init
+        
       - name: terraform apply
         run: terraform apply -auto-approve
 
