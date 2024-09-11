@@ -161,3 +161,5 @@
       with_items:
         - /actions-runner
         - /opt/hostedtoolcache
+  environment:
+    DEBIAN_FRONTEND: noninteractive
