@@ -60,7 +60,7 @@ jobs:
 
       - name: terraform output
         id: terraform_output
-        run: echo "respository_uri=$(terraform output respository_uri)" >> $GITHUB_ENV
+        run: echo "respository_uri=$(terraform output repository_uri)" >> $GITHUB_ENV
 
       - name: install dependencies
         run: |

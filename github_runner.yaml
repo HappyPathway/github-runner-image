@@ -1,4 +1,21 @@
 ---
+---
+- hosts: all
+  become: yes
+  become_user: root
+  gather_facts: false
+
+  tasks:
+    - name: Check for Python
+      raw: which python || which python3
+      changed_when: false
+      failed_when: false
+      register: check_python
+
+    - name: Install Python
+      raw: apt-get install -y install python3
+      when: check_python.rc != 0
+
 - name: Setup GitHub Actions Runner
   hosts: all
   become: yes
@@ -106,12 +123,12 @@
     - name: Make entrypoint.sh executable
       ansible.builtin.file:
         path: /opt/entrypoint.sh
-        mode: '0755'
+        mode: "0755"
 
     - name: Add sudoers entry for ALL users
       ansible.builtin.lineinfile:
         path: /etc/sudoers
-        line: 'ALL            ALL = (ALL) NOPASSWD: ALL'
+        line: "ALL            ALL = (ALL) NOPASSWD: ALL"
         create: yes
 
     - name: Create actions group
