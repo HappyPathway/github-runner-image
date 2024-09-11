@@ -130,12 +130,10 @@
     - name: Create actions group
       ansible.builtin.group:
         name: actions
-        gid: 1000
 
     - name: Create actions user
       ansible.builtin.user:
         name: actions
-        uid: 1000
         group: actions
         shell: /bin/bash
         create_home: yes
