@@ -76,12 +76,6 @@
         dest: /usr/bin/python
         state: link
 
-    - name: Create symbolic link for pip3
-      ansible.builtin.file:
-        src: /usr/bin/pip3
-        dest: /usr/bin/pip
-        state: link
-
     - name: Clean up apt cache
       ansible.builtin.apt:
         autoclean: yes
