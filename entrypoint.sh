@@ -14,6 +14,13 @@ RUNNER_NAME=${RUNNER_NAME_FULL:0:64}
 echo "Fetching ACCESS_TOKEN from AWS Secrets Manager"
 ACCESS_TOKEN=$(aws secretsmanager get-secret-value --secret-id ${ACCESS_TOKEN_SECRET_PATH} --query SecretString --output text)
 
+if [ -n "${CERTS_PATH}" ]; then
+  echo "Setting up certificates"
+  mkdir -p /usr/local/share/ca-certificates
+  aws s3 cp s3://${CERTS_PATH} /usr/local/share/ca-certificates
+  update-ca-certificates
+fi
+
 # Support for setup-python
 echo "Setting AGENT_TOOLSDIRECTORY to /opt/hostedtoolscache"
 AGENT_TOOLSDIRECTORY=/opt/hostedtoolscache
