@@ -17,7 +17,7 @@ if [ -n "${RUNNER_GROUP}" ]; then
   command="${command} --runnergroup ${RUNNER_GROUP}"
 fi
 
-command="${command} --labels ${RUNNER_LABELS} --disableupdate --replace --work /actions-runner/_work"
+command="${command} --labels ${RUNNER_LABELS} --disableupdate --work /actions-runner/_work --replace"
 echo "Configuring github runner with token..."
 eval ${command}
 
