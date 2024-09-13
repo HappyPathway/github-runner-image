@@ -117,7 +117,7 @@
     - name: Set architecture variable
       ansible.builtin.set_fact:
         arch: x64
-        
+
     - name: Get latest GitHub Actions Runner version
       ansible.builtin.shell: |
         curl -fsSL "https://api.github.com/repos/actions/runner/releases/latest" | jq -r '.tag_name' | cut -c2-
@@ -125,7 +125,7 @@
 
     - name: Download GitHub Actions Runner
       ansible.builtin.get_url:
-        url: "https://github.com/actions/runner/releases/download/v{{ gh_runner_version.stdout }}/actions-runner-linux-{{ ARCH }}-{{ gh_runner_version.stdout }}.tar.gz"
+        url: "https://github.com/actions/runner/releases/download/v{{ gh_runner_version.stdout }}/actions-runner-linux-{{ arch }}-{{ gh_runner_version.stdout }}.tar.gz"
         dest: "/tmp/actions-runner-linux-{{ ARCH }}-{{ gh_runner_version.stdout }}.tar.gz"
 
 
