@@ -18,6 +18,9 @@ ACCESS_TOKEN=$(aws secretsmanager get-secret-value --secret-id ${ACCESS_TOKEN_SE
 echo "Setting AGENT_TOOLSDIRECTORY to /opt/hostedtoolscache"
 AGENT_TOOLSDIRECTORY=/opt/hostedtoolscache
 
+echo NODE_TLS_REJECT_UNAUTHORIZED=0 >> /actions-runner/.env
+echo LANG=en_US.UTF-8 >> /actions-runner/.env
+
 echo "Changing directory to /actions-runner"
 cd /actions-runner
 
