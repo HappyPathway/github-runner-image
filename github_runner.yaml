@@ -117,23 +117,17 @@
     - name: Set architecture variable
       ansible.builtin.set_fact:
         arch: x64
-
+        
     - name: Get latest GitHub Actions Runner version
-      ansible.builtin.uri:
-        url: https://api.github.com/repos/actions/runner/releases/latest
-        return_content: true
-      register: gh_runner_response
-
-    - name: Parse GitHub Actions Runner version
-      ansible.builtin.set_fact:
-        gh_runner_version: "{{ gh_runner_response.json.tag_name }}"
-      changed_when: gh_runner_version != ""
+      ansible.builtin.shell: |
+        curl -fsSL "https://api.github.com/repos/actions/runner/releases/latest" | jq -r '.tag_name' | cut -c2-
+      register: gh_runner_version
 
     - name: Download GitHub Actions Runner
       ansible.builtin.get_url:
-        url: "https://github.com/actions/runner/releases/download/v{{ gh_runner_version }}/actions-runner-linux-{{ arch }}-{{ gh_runner_version }}.tar.gz"
-        dest: "/tmp/actions-runner-linux-{{ arch }}-{{ gh_runner_version }}.tar.gz"
-        mode: '0644'
+        url: "https://github.com/actions/runner/releases/download/v{{ gh_runner_version.stdout }}/actions-runner-linux-{{ ARCH }}-{{ gh_runner_version.stdout }}.tar.gz"
+        dest: "/tmp/actions-runner-linux-{{ ARCH }}-{{ gh_runner_version.stdout }}.tar.gz"
+
 
     - name: Extract GitHub Actions Runner
       ansible.builtin.unarchive:
