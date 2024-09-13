@@ -27,6 +27,30 @@
       ansible.builtin.apt:
         update_cache: yes
 
+    - name: Download AWS CLI v2
+      ansible.builtin.get_url:
+      url: "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
+      dest: /tmp/awscliv2.zip
+
+    - name: Unzip AWS CLI v2
+      ansible.builtin.unarchive:
+      src: /tmp/awscliv2.zip
+      dest: /tmp/
+      remote_src: yes
+
+    - name: Install AWS CLI v2
+      ansible.builtin.shell: sudo /tmp/aws/install
+
+    - name: Remove AWS CLI v2 zip file
+      ansible.builtin.file:
+      path: /tmp/awscliv2.zip
+      state: absent
+
+    - name: Remove AWS CLI v2 extracted directory
+      ansible.builtin.file:
+      path: /tmp/aws
+      state: absent
+
     - name: Install required packages
       ansible.builtin.apt:
         name:

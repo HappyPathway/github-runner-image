@@ -5,6 +5,8 @@ RUNNER_NAME_FULL="${NAMESPACE}-${HOSTNAME}"
 # Cut the name if it is more than 64 characters
 RUNNER_NAME=${RUNNER_NAME_FULL:0:64}
 
+ACCESS_TOKEN=$(aws secretsmanager get-secret-value --secret-id ${ACCESS_TOKEN_SECRET_PATH} --query SecretString --output text)
+
 # Support for setup-python
 AGENT_TOOLSDIRECTORY=/opt/hostedtoolscache
 cd /actions-runner
@@ -15,7 +17,7 @@ if [ -n "${RUNNER_GROUP}" ]; then
   command="${command} --runnergroup ${RUNNER_GROUP}"
 fi
 
-command="${command} --labels ${RUNNER_LABELS} --disableupdate --replace --ephemeral"
+command="${command} --labels ${RUNNER_LABELS} --disableupdate --replace --work /actions-runner/_work"
 echo "Configuring github runner with token..."
 eval ${command}
 
