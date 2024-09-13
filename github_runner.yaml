@@ -181,5 +181,12 @@
       with_items:
         - /actions-runner
         - /opt/hostedtoolcache
+
+  handlers:
+    - name: Set correct permissions for sudoers file
+      ansible.builtin.file:
+        path: /etc/sudoers
+        mode: '0440'
+        
   environment:
     DEBIAN_FRONTEND: noninteractive
