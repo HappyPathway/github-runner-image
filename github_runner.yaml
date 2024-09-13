@@ -30,7 +30,6 @@
     - name: Install required packages
       ansible.builtin.apt:
         name:
-          - apt-utils
           - software-properties-common
           - build-essential
           - bison

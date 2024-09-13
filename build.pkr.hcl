@@ -55,7 +55,8 @@ build {
 
   provisioner "shell" {
     inline = [
-      "apt-get update && apt-get install -y python3-pip python3 sudo"
+      "apt-get update && apt-get install -y apt-utils",
+      "apt-get install -y python3-pip python3 sudo"
     ]
     environment_vars = [
       "DEBIAN_FRONTEND=noninteractive"
