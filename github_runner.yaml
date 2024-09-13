@@ -126,18 +126,18 @@
     - name: Download GitHub Actions Runner
       ansible.builtin.get_url:
         url: "https://github.com/actions/runner/releases/download/v{{ gh_runner_version.stdout }}/actions-runner-linux-{{ arch }}-{{ gh_runner_version.stdout }}.tar.gz"
-        dest: "/tmp/actions-runner-linux-{{ ARCH }}-{{ gh_runner_version.stdout }}.tar.gz"
+        dest: "/tmp/actions-runner-linux-{{ arch }}-{{ gh_runner_version.stdout }}.tar.gz"
 
 
     - name: Extract GitHub Actions Runner
       ansible.builtin.unarchive:
-        src: "/tmp/actions-runner-linux-{{ ARCH }}-{{ gh_runner_version.stdout }}.tar.gz"
+        src: "/tmp/actions-runner-linux-{{ arch }}-{{ gh_runner_version.stdout }}.tar.gz"
         dest: /actions-runner
         remote_src: true
 
     - name: Remove downloaded tarball
       ansible.builtin.file:
-        path: "/tmp/actions-runner-linux-{{ ARCH }}-{{ gh_runner_version.stdout }}.tar.gz"
+        path: "/tmp/actions-runner-linux-{{ arch }}-{{ gh_runner_version.stdout }}.tar.gz"
         state: absent
 
     - name: Create /opt/hostedtoolcache directory
