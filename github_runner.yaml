@@ -1,55 +1,59 @@
 ---
-- hosts: all
-  become: yes
+- name: Ensure Python is installed
+  hosts: all
+  become: true
   become_user: root
   gather_facts: false
 
   tasks:
     - name: Check for Python
-      raw: which python || which python3
+      ansible.builtin.raw: which python || which python3
       changed_when: false
       failed_when: false
       register: check_python
 
     - name: Install Python
-      raw: apt-get install -y install python3
+      ansible.builtin.raw: apt-get install -y install python3
       when: check_python.rc != 0
+      changed_when: false
 
 - name: Setup GitHub Actions Runner
   hosts: all
-  become: yes
+  become: true
 
   tasks:
-    - name: Set DEBIAN_FRONTEND to noninteractive
-      ansible.builtin.shell: export DEBIAN_FRONTEND=noninteractive
-
     - name: Update apt cache
       ansible.builtin.apt:
-        update_cache: yes
+        update_cache: true
 
     - name: Download AWS CLI v2
       ansible.builtin.get_url:
-      url: "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
-      dest: /tmp/awscliv2.zip
+        url: "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
+        dest: /tmp/awscliv2.zip
+        mode: '0644'
+
 
     - name: Unzip AWS CLI v2
       ansible.builtin.unarchive:
-      src: /tmp/awscliv2.zip
-      dest: /tmp/
-      remote_src: yes
+        src: /tmp/awscliv2.zip
+        dest: /tmp/xxx
+        remote_src: true
 
     - name: Install AWS CLI v2
-      ansible.builtin.shell: sudo /tmp/aws/install
+      ansible.builtin.command:
+        cmd: /tmp/aws/install
+      args:
+        creates: /usr/local/bin/aws
 
     - name: Remove AWS CLI v2 zip file
       ansible.builtin.file:
-      path: /tmp/awscliv2.zip
-      state: absent
+        path: /tmp/awscliv2.zip
+        state: absent
 
     - name: Remove AWS CLI v2 extracted directory
       ansible.builtin.file:
-      path: /tmp/aws
-      state: absent
+        path: /tmp/aws
+        state: absent
 
     - name: Install required packages
       ansible.builtin.apt:
@@ -82,7 +86,7 @@
           - zlib1g-dev
           - zstd
         state: present
-        install_recommends: no
+        install_recommends: false
       environment:
         DEBIAN_FRONTEND: noninteractive
 
@@ -92,7 +96,7 @@
 
     - name: Update apt cache after adding Git PPA
       ansible.builtin.apt:
-        update_cache: yes
+        update_cache: true
 
     - name: Create symbolic link for python3
       ansible.builtin.file:
@@ -102,32 +106,40 @@
 
     - name: Clean up apt cache
       ansible.builtin.apt:
-        autoclean: yes
+        autoclean: true
 
     - name: Create actions-runner/_work directory
       ansible.builtin.file:
         path: /actions-runner/_work
         state: directory
+        mode: '0755'
 
     - name: Set architecture variable
       ansible.builtin.set_fact:
-        ARCH: x64
+        arch: x64
 
     - name: Get latest GitHub Actions Runner version
-      ansible.builtin.shell: |
-        curl -fsSL "https://api.github.com/repos/actions/runner/releases/latest" | jq -r '.tag_name' | cut -c2-
-      register: gh_runner_version
+      ansible.builtin.uri:
+        url: https://api.github.com/repos/actions/runner/releases/latest
+        return_content: true
+      register: gh_runner_response
+
+    - name: Parse GitHub Actions Runner version
+      ansible.builtin.set_fact:
+        gh_runner_version: "{{ gh_runner_response.json.tag_name }}"
+      changed_when: gh_runner_version != ""
 
     - name: Download GitHub Actions Runner
       ansible.builtin.get_url:
-        url: "https://github.com/actions/runner/releases/download/v{{ gh_runner_version.stdout }}/actions-runner-linux-{{ ARCH }}-{{ gh_runner_version.stdout }}.tar.gz"
-        dest: "/tmp/actions-runner-linux-{{ ARCH }}-{{ gh_runner_version.stdout }}.tar.gz"
+        url: "https://github.com/actions/runner/releases/download/v{{ gh_runner_version }}/actions-runner-linux-{{ arch }}-{{ gh_runner_version }}.tar.gz"
+        dest: "/tmp/actions-runner-linux-{{ arch }}-{{ gh_runner_version }}.tar.gz"
+        mode: '0644'
 
     - name: Extract GitHub Actions Runner
       ansible.builtin.unarchive:
         src: "/tmp/actions-runner-linux-{{ ARCH }}-{{ gh_runner_version.stdout }}.tar.gz"
         dest: /actions-runner
-        remote_src: yes
+        remote_src: true
 
     - name: Remove downloaded tarball
       ansible.builtin.file:
@@ -138,6 +150,7 @@
       ansible.builtin.file:
         path: /opt/hostedtoolcache
         state: directory
+        mode: '0755'
 
     - name: Create entrypoint.sh
       ansible.builtin.copy:
@@ -149,7 +162,10 @@
       ansible.builtin.lineinfile:
         path: /etc/sudoers
         line: "ALL            ALL = (ALL) NOPASSWD: ALL"
-        create: yes
+        create: true
+        mode: '0440'
+      notify:
+        - Set correct permissions for sudoers file
 
     - name: Create actions group
       ansible.builtin.group:
@@ -160,14 +176,14 @@
         name: actions
         group: actions
         shell: /bin/bash
-        create_home: yes
+        create_home: true
 
     - name: Change ownership of /actions-runner and /opt/hostedtoolcache
       ansible.builtin.file:
         path: "{{ item }}"
         owner: actions
         group: actions
-        recurse: yes
+        recurse: true
       with_items:
         - /actions-runner
         - /opt/hostedtoolcache
