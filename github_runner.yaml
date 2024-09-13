@@ -26,34 +26,6 @@
       ansible.builtin.apt:
         update_cache: true
 
-    - name: Download AWS CLI v2
-      ansible.builtin.get_url:
-        url: "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
-        dest: /tmp/awscliv2.zip
-        mode: '0644'
-
-
-    - name: Unzip AWS CLI v2
-      ansible.builtin.unarchive:
-        src: /tmp/awscliv2.zip
-        dest: /tmp
-        remote_src: true
-
-    - name: Install AWS CLI v2
-      ansible.builtin.command:
-        cmd: /tmp/aws/install
-      args:
-        creates: /usr/local/bin/aws
-
-    - name: Remove AWS CLI v2 zip file
-      ansible.builtin.file:
-        path: /tmp/awscliv2.zip
-        state: absent
-
-    - name: Remove AWS CLI v2 extracted directory
-      ansible.builtin.file:
-        path: /tmp/aws
-        state: absent
 
     - name: Install required packages
       ansible.builtin.apt:
@@ -89,6 +61,34 @@
         install_recommends: false
       environment:
         DEBIAN_FRONTEND: noninteractive
+
+    - name: Download AWS CLI v2
+      ansible.builtin.get_url:
+        url: "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
+        dest: /tmp/awscliv2.zip
+        mode: '0644'
+
+    - name: Unzip AWS CLI v2
+      ansible.builtin.unarchive:
+        src: /tmp/awscliv2.zip
+        dest: /tmp
+        remote_src: true
+
+    - name: Install AWS CLI v2
+      ansible.builtin.command:
+        cmd: /tmp/aws/install
+      args:
+        creates: /usr/local/bin/aws
+
+    - name: Remove AWS CLI v2 zip file
+      ansible.builtin.file:
+        path: /tmp/awscliv2.zip
+        state: absent
+
+    - name: Remove AWS CLI v2 extracted directory
+      ansible.builtin.file:
+        path: /tmp/aws
+        state: absent
 
     - name: Add Git PPA repository
       ansible.builtin.apt_repository:
