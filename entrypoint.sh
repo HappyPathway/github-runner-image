@@ -16,13 +16,13 @@ ACCESS_TOKEN=$(aws secretsmanager get-secret-value --secret-id ${ACCESS_TOKEN_SE
 
 if [ -n "${CERTS_PATH}" ]; then
   echo "Setting up certificates"
-  exho "creating /usr/local/share/ca-certificates"
+  echo "creating /usr/local/share/ca-certificates"
   sudo mkdir -p /usr/local/share/ca-certificates
   echo "opying file from s3"
   aws s3 cp s3://${CERTS_PATH} /tmo/local-ca.crt
   echo "moving file yo ca-cert directory"
   sudo mv /local-ca.crt /usr/local/share/ca-certificates/local-ca.crt
-  exho "updating ca certs"
+  echo "updating ca certs"
   sudo update-ca-certificates
 fi
 
