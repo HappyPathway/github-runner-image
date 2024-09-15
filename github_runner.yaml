@@ -128,7 +128,6 @@
         url: "https://github.com/actions/runner/releases/download/v{{ gh_runner_version.stdout }}/actions-runner-linux-{{ arch }}-{{ gh_runner_version.stdout }}.tar.gz"
         dest: "/tmp/actions-runner-linux-{{ arch }}-{{ gh_runner_version.stdout }}.tar.gz"
 
-
     - name: Extract GitHub Actions Runner
       ansible.builtin.unarchive:
         src: "/tmp/actions-runner-linux-{{ arch }}-{{ gh_runner_version.stdout }}.tar.gz"
@@ -152,41 +151,41 @@
         dest: /opt/entrypoint.sh
         mode: "0755"
 
-    - name: Add sudoers entry for ALL users
-      ansible.builtin.lineinfile:
-        path: /etc/sudoers
-        line: "ALL            ALL = (ALL) NOPASSWD: ALL"
-        create: true
-        mode: '0440'
-      notify:
-        - Set correct permissions for sudoers file
+    # - name: Add sudoers entry for ALL users
+    #   ansible.builtin.lineinfile:
+    #     path: /etc/sudoers
+    #     line: "ALL            ALL = (ALL) NOPASSWD: ALL"
+    #     create: true
+    #     mode: '0440'
+    #   notify:
+    #     - Set correct permissions for sudoers file
 
-    - name: Create actions group
-      ansible.builtin.group:
-        name: actions
+    # - name: Create actions group
+    #   ansible.builtin.group:
+    #     name: actions
 
-    - name: Create actions user
-      ansible.builtin.user:
-        name: actions
-        group: actions
-        shell: /bin/bash
-        create_home: true
+    # - name: Create actions user
+    #   ansible.builtin.user:
+    #     name: actions
+    #     group: actions
+    #     shell: /bin/bash
+    #     create_home: true
 
-    - name: Change ownership of /actions-runner and /opt/hostedtoolcache
-      ansible.builtin.file:
-        path: "{{ item }}"
-        owner: actions
-        group: actions
-        recurse: true
-      with_items:
-        - /actions-runner
-        - /opt/hostedtoolcache
+    # - name: Change ownership of /actions-runner and /opt/hostedtoolcache
+    #   ansible.builtin.file:
+    #     path: "{{ item }}"
+    #     owner: actions
+    #     group: actions
+    #     recurse: true
+    #   with_items:
+    #     - /actions-runner
+    #     - /opt/hostedtoolcache
 
-  handlers:
-    - name: Set correct permissions for sudoers file
-      ansible.builtin.file:
-        path: /etc/sudoers
-        mode: '0440'
+  # handlers:
+  #   - name: Set correct permissions for sudoers file
+  #     ansible.builtin.file:
+  #       path: /etc/sudoers
+  #       mode: '0440'
         
   environment:
     DEBIAN_FRONTEND: noninteractive
