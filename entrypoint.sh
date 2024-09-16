@@ -17,13 +17,13 @@ ACCESS_TOKEN=$(aws secretsmanager get-secret-value --secret-id ${ACCESS_TOKEN_SE
 if [ -n "${CERTS_PATH}" ]; then
   echo "Setting up certificates"
   echo "creating /usr/local/share/ca-certificates"
-  mkdir -p /usr/local/share/ca-certificates
+  sudo mkdir -p /usr/local/share/ca-certificates
   echo "opying file from s3"
   aws s3 cp s3://${CERTS_PATH} /tmp/local-ca.crt
   echo "moving file yo ca-cert directory"
-  mv /tmp/local-ca.crt /usr/local/share/ca-certificates/local-ca.crt
+  sudo mv /tmp/local-ca.crt /usr/local/share/ca-certificates/local-ca.crt
   echo "updating ca certs"
-  update-ca-certificates
+  sudo update-ca-certificates
 fi
 
 # Support for setup-python
