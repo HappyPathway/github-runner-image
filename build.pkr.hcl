@@ -41,7 +41,8 @@ source "docker" "image" {
   commit = true
   changes = [
     "WORKDIR /actions-runner",
-    "ENTRYPOINT /opt/entrypoint.sh"
+    "ENTRYPOINT /opt/entrypoint.sh",
+    "USER actions"
   ]
 }
 
