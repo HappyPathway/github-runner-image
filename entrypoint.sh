@@ -19,9 +19,9 @@ if [ -n "${CERTS_PATH}" ]; then
   echo "creating /usr/local/share/ca-certificates"
   mkdir -p /usr/local/share/ca-certificates
   echo "opying file from s3"
-  aws s3 cp s3://${CERTS_PATH} /tmo/local-ca.crt
+  aws s3 cp s3://${CERTS_PATH} /tmp/local-ca.crt
   echo "moving file yo ca-cert directory"
-  mv /local-ca.crt /usr/local/share/ca-certificates/local-ca.crt
+  mv /tmp/local-ca.crt /usr/local/share/ca-certificates/local-ca.crt
   echo "updating ca certs"
   update-ca-certificates
 fi
