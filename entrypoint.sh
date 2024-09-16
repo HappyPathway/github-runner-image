@@ -4,13 +4,17 @@ set -e
 echo "Setting PATH to include /actions-runner"
 export PATH="$PATH:/actions-runner"
 
+echo "Generating Random Suffix..."
+suffix=$(cat /proc/sys/kernel/random/uuid | awk -F'-' '{ print $1 }')
+
 echo "Generating RUNNER_NAME_FULL from NAMESPACE and HOSTNAME"
-RUNNER_NAME_FULL="${NAMESPACE}-${HOSTNAME}"
+RUNNER_NAME_FULL="${NAMESPACE}-${HOSTNAME}-${suffix}"
 
 # Cut the name if it is more than 64 characters
 echo "Trimming RUNNER_NAME_FULL to 64 characters"
 RUNNER_NAME=${RUNNER_NAME_FULL:0:64}
 
+echo "Runner Name:: ${RUNNER_NAME}"
 echo "Fetching ACCESS_TOKEN from AWS Secrets Manager"
 ACCESS_TOKEN=$(aws secretsmanager get-secret-value --secret-id ${ACCESS_TOKEN_SECRET_PATH} --query SecretString --output text)
 
