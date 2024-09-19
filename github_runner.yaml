@@ -250,6 +250,11 @@
 
     - name: Include install_terraform.yaml tasks
       ansible.builtin.include_tasks: install_terraform.yaml
+      apply:
+        tags:
+        - terraform
+      tags:
+        - always
 
   handlers:
     - name: Set correct permissions for sudoers file
