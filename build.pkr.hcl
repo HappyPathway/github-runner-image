@@ -40,7 +40,7 @@ source "docker" "image" {
   fix_upload_owner = true
   commit = true
   changes = [
-    "WORKDIR /actions-runner",
+    "WORKDIR /home/actions",
     "ENTRYPOINT /opt/entrypoint.sh",
     "USER actions"
   ]

@@ -38,7 +38,7 @@ echo NODE_TLS_REJECT_UNAUTHORIZED=0 >> /actions-runner/.env
 echo LANG=en_US.UTF-8 >> /actions-runner/.env
 
 echo "Changing directory to /actions-runner"
-cd /actions-runner
+cd /home/actions
 
 echo "Building config command"
 command="./config.sh --unattended --url ${REPO_URL} --token ${ACCESS_TOKEN} --name ${RUNNER_NAME} "

@@ -108,9 +108,21 @@
       ansible.builtin.apt:
         autoclean: true
 
+    - name: Create actions group
+      ansible.builtin.group:
+        name: actions
+
+    - name: Create actions user
+      ansible.builtin.user:
+        name: actions
+        group: actions
+        shell: /bin/bash
+        create_home: true
+        home: /home/actions
+
     - name: Create actions-runner/_work directory
       ansible.builtin.file:
-        path: /actions-runner/_work
+        path: /home/actions/_work
         state: directory
         mode: '0755'
 
@@ -131,7 +143,7 @@
     - name: Extract GitHub Actions Runner
       ansible.builtin.unarchive:
         src: "/tmp/actions-runner-linux-{{ arch }}-{{ gh_runner_version.stdout }}.tar.gz"
-        dest: /actions-runner
+        dest: /home/actions
         remote_src: true
 
     - name: Remove downloaded tarball
@@ -160,17 +172,6 @@
       notify:
         - Set correct permissions for sudoers file
 
-    - name: Create actions group
-      ansible.builtin.group:
-        name: actions
-
-    - name: Create actions user
-      ansible.builtin.user:
-        name: actions
-        group: actions
-        shell: /bin/bash
-        create_home: true
-
     - name: Change ownership of /actions-runner and /opt/hostedtoolcache
       ansible.builtin.file:
         path: "{{ item }}"
@@ -178,7 +179,7 @@
         group: actions
         recurse: true
       with_items:
-        - /actions-runner
+        - /home/actions
         - /opt/hostedtoolcache
 
   handlers:
