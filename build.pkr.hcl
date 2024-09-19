@@ -74,6 +74,7 @@ build {
   provisioner "ansible" {
     playbook_file = "github_runner.yaml"
     extra_arguments = [
+      "--extra-vars",
       "--tags ${var.ansible_tag}",
       "-e terraform_version=${var.terraform_version}"
     ]
