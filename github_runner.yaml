@@ -15,7 +15,7 @@
       ansible.builtin.raw: apt-get install -y install python3
       when: check_python.rc != 0
       changed_when: false
-      
+
 - name: Setup GitHub Actions Runner
   hosts: all
   become: true
@@ -250,9 +250,6 @@
 
     - name: Include install_terraform.yaml tasks
       ansible.builtin.include_tasks: install_terraform.yaml
-      tags:
-        - always
-        - default
 
   handlers:
     - name: Set correct permissions for sudoers file

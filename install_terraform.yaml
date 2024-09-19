@@ -11,7 +11,7 @@
     dest: '/usr/local/bin/{{ item }}'
     state: link
   with_fileglob:
-    - 'tfenv'
+    - '{{ ansible_env.HOME }}/.tfenv/bin/*'
   tags:
     - terraform
 
