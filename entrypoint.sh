@@ -34,8 +34,8 @@ fi
 echo "Setting AGENT_TOOLSDIRECTORY to /opt/hostedtoolscache"
 AGENT_TOOLSDIRECTORY=/opt/hostedtoolscache
 
-echo NODE_TLS_REJECT_UNAUTHORIZED=0 >> /actions-runner/.env
-echo LANG=en_US.UTF-8 >> /actions-runner/.env
+echo NODE_TLS_REJECT_UNAUTHORIZED=0 >> /home/actions/.env
+echo LANG=en_US.UTF-8 >> /home/actions/.env
 
 echo "Changing directory to /actions-runner"
 cd /home/actions
