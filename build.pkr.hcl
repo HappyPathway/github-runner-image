@@ -31,6 +31,10 @@ variable repository_uri {
   type = string
 }
 
+variable ansible_tag {
+  type = string
+}
+
 locals {
   repository_uri   = var.repository_uri
 }
@@ -65,12 +69,16 @@ build {
 
   provisioner "ansible" {
     playbook_file = "github_runner.yaml"
+    extra_arguments = [
+      "--extra-vars",
+      "--tags ${var.ansible_tag}"
+    ]
   }
 
   post-processors {
     post-processor "docker-tag" {
       repository = var.repository_uri
-      tags       = [var.tag]
+      tags       = ["${var.tag}-${var.ansible_tag}"]
     }
 
     post-processor "docker-push" {

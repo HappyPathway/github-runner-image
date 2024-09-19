@@ -20,6 +20,9 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
     # Steps represent a sequence of tasks that will be executed as part of the job
+    strategy:
+      matrix:
+        ansible_tag: [terraform, default]
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/setup-node@v3
@@ -95,6 +98,7 @@ jobs:
           -var repository_uri=${{ env.respository_uri }} \
           -var tag=${{ env.next_tag }} \
           -var source_image=${{ vars.source_image }} \
+          -var ansible_tag=${{ matrix.ansible_tag }} \
           build.pkr.hcl
           
       - name: set tag
@@ -113,6 +117,7 @@ jobs:
           -var repository_uri=${{ env.respository_uri }} \
           -var tag=${{ env.next_tag }} \
           -var source_image=${{ vars.source_image }} \
+          -var ansible_tag=${{ matrix.ansible_tag }} \
           build.pkr.hcl
 
       

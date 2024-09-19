@@ -4,7 +4,6 @@
   become: true
   become_user: root
   gather_facts: false
-
   tasks:
     - name: Check for Python
       ansible.builtin.raw: which python || which python3
@@ -16,16 +15,17 @@
       ansible.builtin.raw: apt-get install -y install python3
       when: check_python.rc != 0
       changed_when: false
-
+      
 - name: Setup GitHub Actions Runner
   hosts: all
   become: true
-
   tasks:
     - name: Update apt cache
       ansible.builtin.apt:
         update_cache: true
-
+      tags:
+        - always
+        - default
 
     - name: Install required packages
       ansible.builtin.apt:
@@ -61,56 +61,89 @@
         install_recommends: false
       environment:
         DEBIAN_FRONTEND: noninteractive
+      tags:
+        - always
+        - default
 
     - name: Download AWS CLI v2
       ansible.builtin.get_url:
         url: "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
         dest: /tmp/awscliv2.zip
         mode: '0644'
+      tags:
+        - always
+        - default
 
     - name: Unzip AWS CLI v2
       ansible.builtin.unarchive:
         src: /tmp/awscliv2.zip
         dest: /tmp
         remote_src: true
+      tags:
+        - always
+        - default
 
     - name: Install AWS CLI v2
       ansible.builtin.command:
         cmd: /tmp/aws/install
       args:
         creates: /usr/local/bin/aws
+      tags:
+        - always
+        - default
 
     - name: Remove AWS CLI v2 zip file
       ansible.builtin.file:
         path: /tmp/awscliv2.zip
         state: absent
+      tags:
+        - always
+        - default
 
     - name: Remove AWS CLI v2 extracted directory
       ansible.builtin.file:
         path: /tmp/aws
         state: absent
+      tags:
+        - always
+        - default
 
     - name: Add Git PPA repository
       ansible.builtin.apt_repository:
         repo: ppa:git-core/ppa
+      tags:
+        - always
+        - default
 
     - name: Update apt cache after adding Git PPA
       ansible.builtin.apt:
         update_cache: true
+      tags:
+        - always
+        - default
 
     - name: Create symbolic link for python3
       ansible.builtin.file:
         src: /usr/bin/python3
         dest: /usr/bin/python
         state: link
+      tags:
+        - always
+        - default
 
     - name: Clean up apt cache
       ansible.builtin.apt:
         autoclean: true
+      tags:
+        - always
+        - default
 
     - name: Create actions group
       ansible.builtin.group:
         name: actions
+      tags:
+        - always
+        - default
 
     - name: Create actions user
       ansible.builtin.user:
@@ -119,49 +152,76 @@
         shell: /bin/bash
         create_home: true
         home: /home/actions
+      tags:
+        - always
+        - default
 
     - name: Create actions-runner/_work directory
       ansible.builtin.file:
         path: /home/actions/_work
         state: directory
         mode: '0755'
+      tags:
+        - always
+        - default
 
     - name: Set architecture variable
       ansible.builtin.set_fact:
         arch: x64
+      tags:
+        - always
+        - default
 
     - name: Get latest GitHub Actions Runner version
       ansible.builtin.shell: |
         curl -fsSL "https://api.github.com/repos/actions/runner/releases/latest" | jq -r '.tag_name' | cut -c2-
       register: gh_runner_version
+      tags:
+        - always
+        - default
 
     - name: Download GitHub Actions Runner
       ansible.builtin.get_url:
         url: "https://github.com/actions/runner/releases/download/v{{ gh_runner_version.stdout }}/actions-runner-linux-{{ arch }}-{{ gh_runner_version.stdout }}.tar.gz"
         dest: "/tmp/actions-runner-linux-{{ arch }}-{{ gh_runner_version.stdout }}.tar.gz"
+      tags:
+        - always
+        - default
 
     - name: Extract GitHub Actions Runner
       ansible.builtin.unarchive:
         src: "/tmp/actions-runner-linux-{{ arch }}-{{ gh_runner_version.stdout }}.tar.gz"
         dest: /home/actions
         remote_src: true
+      tags:
+        - always
+        - default
 
     - name: Remove downloaded tarball
       ansible.builtin.file:
         path: "/tmp/actions-runner-linux-{{ arch }}-{{ gh_runner_version.stdout }}.tar.gz"
         state: absent
+      tags:
+        - always
+        - default
 
     - name: Create /opt/hostedtoolcache directory
       ansible.builtin.file:
         path: /opt/hostedtoolcache
         state: directory
         mode: '0755'
+      tags:
+        - always
+        - default
 
     - name: Create entrypoint.sh
       ansible.builtin.copy:
         src: entrypoint.sh
         dest: /opt/entrypoint.sh
         mode: "0755"
+      tags:
+        - always
+        - default
 
     - name: Add sudoers entry for ALL users
       ansible.builtin.lineinfile:
@@ -171,6 +231,9 @@
         mode: '0440'
       notify:
         - Set correct permissions for sudoers file
+      tags:
+        - always
+        - default
 
     - name: Change ownership of /actions-runner and /opt/hostedtoolcache
       ansible.builtin.file:
@@ -181,12 +244,24 @@
       with_items:
         - /home/actions
         - /opt/hostedtoolcache
+      tags:
+        - always
+        - default
+
+    - name: Include install_terraform.yaml tasks
+      ansible.builtin.include_tasks: install_terraform.yaml
+      tags:
+        - always
+        - default
 
   handlers:
     - name: Set correct permissions for sudoers file
       ansible.builtin.file:
         path: /etc/sudoers
         mode: '0440'
-        
+      tags:
+        - always
+        - default
+
   environment:
     DEBIAN_FRONTEND: noninteractive

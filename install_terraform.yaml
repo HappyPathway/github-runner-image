@@ -1,0 +1,30 @@
+- name: Clone tfenv repository
+  ansible.builtin.git:
+    repo: 'https://github.com/tfutils/tfenv.git'
+    dest: '{{ ansible_env.HOME }}/.tfenv'
+  tags:
+    - terraform
+
+- name: Create symbolic links for tfenv binaries
+  ansible.builtin.file:
+    src: '{{ ansible_env.HOME }}/.tfenv/bin/{{ item }}'
+    dest: '/usr/local/bin/{{ item }}'
+    state: link
+  with_fileglob:
+    - '{{ ansible_env.HOME }}/.tfenv/bin/*'
+  tags:
+    - terraform
+
+- name: Install specified Terraform version
+  ansible.builtin.command: /usr/local/bin/tfenv install {{ terraform_version }}
+  args:
+    creates: '{{ ansible_env.HOME }}/.tfenv/versions/{{ terraform_version }}'
+  tags:
+    - terraform
+
+- name: Use specified Terraform version
+  ansible.builtin.command: /usr/local/bin/tfenv use {{ terraform_version }}
+  args:
+    creates: '{{ ansible_env.HOME }}/.tfenv/version'
+  tags:
+    - terraform
