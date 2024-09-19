@@ -99,6 +99,7 @@ jobs:
           -var tag=${{ env.next_tag }} \
           -var source_image=${{ vars.source_image }} \
           -var ansible_tag=${{ matrix.ansible_tag }} \
+          -var terraform_version=${{ vars.terraform_version }} \
           build.pkr.hcl
           
       - name: set tag
@@ -118,6 +119,7 @@ jobs:
           -var tag=${{ env.next_tag }} \
           -var source_image=${{ vars.source_image }} \
           -var ansible_tag=${{ matrix.ansible_tag }} \
+          -var terraform_version=${{ vars.terraform_version }} \
           build.pkr.hcl
 
       
