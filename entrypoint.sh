@@ -58,7 +58,7 @@ echo "Adding labels, disableupdate, work directory, and replace options to confi
 command="${command} --labels ${RUNNER_LABELS} --disableupdate --work /home/actions/_work --replace"
 
 echo ${command}
-command = "${command} --token ${ACCESS_TOKEN}"
+command="${command} --token ${ACCESS_TOKEN}"
 echo "Configuring GitHub runner with token..."
 eval ${command}
 
