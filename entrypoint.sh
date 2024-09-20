@@ -1,7 +1,7 @@
 #!/bin/bash -m
 set -e
 
-echo "Setting PATH to include /actions-runner"
+echo "Setting PATH to include /home/actions"
 export PATH="$PATH:/home/actions"
 
 echo "Generating Random Suffix..."
@@ -37,11 +37,11 @@ AGENT_TOOLSDIRECTORY=/opt/hostedtoolscache
 echo NODE_TLS_REJECT_UNAUTHORIZED=0 >> /home/actions/.env
 echo LANG=en_US.UTF-8 >> /home/actions/.env
 
-echo "Changing directory to /actions-runner"
+echo "Changing directory to /home/actions"
 cd /home/actions
 
 echo "Building config command"
-command="./config.sh --unattended --url ${REPO_URL} --token ${ACCESS_TOKEN} --name ${RUNNER_NAME} "
+command="./config.sh --unattended --url ${REPO_URL} --name ${RUNNER_NAME} "
 
 # Add runner group if non-empty
 if [ -n "${RUNNER_GROUP}" ]; then
@@ -57,6 +57,8 @@ fi
 echo "Adding labels, disableupdate, work directory, and replace options to config command"
 command="${command} --labels ${RUNNER_LABELS} --disableupdate --work /home/actions/_work --replace"
 
+echo ${command}
+command = "${command} --token ${ACCESS_TOKEN}"
 echo "Configuring GitHub runner with token..."
 eval ${command}
 
