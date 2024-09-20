@@ -23,7 +23,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        ansible_tag: [terraform, default]
+        ansible_tag: [terraform, im_a_fish]
         
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
