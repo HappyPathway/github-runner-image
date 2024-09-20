@@ -25,7 +25,7 @@
         update_cache: true
       tags:
         - always
-        - default
+        - base
 
     - name: Install required packages
       ansible.builtin.apt:
@@ -63,7 +63,7 @@
         DEBIAN_FRONTEND: noninteractive
       tags:
         - always
-        - default
+        - base
 
     - name: Download AWS CLI v2
       ansible.builtin.get_url:
@@ -72,7 +72,7 @@
         mode: '0644'
       tags:
         - always
-        - default
+        - base
 
     - name: Unzip AWS CLI v2
       ansible.builtin.unarchive:
@@ -81,7 +81,7 @@
         remote_src: true
       tags:
         - always
-        - default
+        - base
 
     - name: Install AWS CLI v2
       ansible.builtin.command:
@@ -90,7 +90,7 @@
         creates: /usr/local/bin/aws
       tags:
         - always
-        - default
+        - base
 
     - name: Remove AWS CLI v2 zip file
       ansible.builtin.file:
@@ -98,7 +98,7 @@
         state: absent
       tags:
         - always
-        - default
+        - base
 
     - name: Remove AWS CLI v2 extracted directory
       ansible.builtin.file:
@@ -106,21 +106,21 @@
         state: absent
       tags:
         - always
-        - default
+        - base
 
     - name: Add Git PPA repository
       ansible.builtin.apt_repository:
         repo: ppa:git-core/ppa
       tags:
         - always
-        - default
+        - base
 
     - name: Update apt cache after adding Git PPA
       ansible.builtin.apt:
         update_cache: true
       tags:
         - always
-        - default
+        - base
 
     - name: Create symbolic link for python3
       ansible.builtin.file:
@@ -129,21 +129,21 @@
         state: link
       tags:
         - always
-        - default
+        - base
 
     - name: Clean up apt cache
       ansible.builtin.apt:
         autoclean: true
       tags:
         - always
-        - default
+        - base
 
     - name: Create actions group
       ansible.builtin.group:
         name: actions
       tags:
         - always
-        - default
+        - base
 
     - name: Create actions user
       ansible.builtin.user:
@@ -154,7 +154,7 @@
         home: /home/actions
       tags:
         - always
-        - default
+        - base
 
     - name: Create actions-runner/_work directory
       ansible.builtin.file:
@@ -163,14 +163,14 @@
         mode: '0755'
       tags:
         - always
-        - default
+        - base
 
     - name: Set architecture variable
       ansible.builtin.set_fact:
         arch: x64
       tags:
         - always
-        - default
+        - base
 
     - name: Get latest GitHub Actions Runner version
       ansible.builtin.shell: |
@@ -178,7 +178,7 @@
       register: gh_runner_version
       tags:
         - always
-        - default
+        - base
 
     - name: Download GitHub Actions Runner
       ansible.builtin.get_url:
@@ -186,7 +186,7 @@
         dest: "/tmp/actions-runner-linux-{{ arch }}-{{ gh_runner_version.stdout }}.tar.gz"
       tags:
         - always
-        - default
+        - base
 
     - name: Extract GitHub Actions Runner
       ansible.builtin.unarchive:
@@ -195,7 +195,7 @@
         remote_src: true
       tags:
         - always
-        - default
+        - base
 
     - name: Remove downloaded tarball
       ansible.builtin.file:
@@ -203,7 +203,7 @@
         state: absent
       tags:
         - always
-        - default
+        - base
 
     - name: Create /opt/hostedtoolcache directory
       ansible.builtin.file:
@@ -212,7 +212,7 @@
         mode: '0755'
       tags:
         - always
-        - default
+        - base
 
     - name: Create entrypoint.sh
       ansible.builtin.copy:
@@ -221,7 +221,7 @@
         mode: "0755"
       tags:
         - always
-        - default
+        - base
 
     - name: Add sudoers entry for ALL users
       ansible.builtin.lineinfile:
@@ -233,7 +233,7 @@
         - Set correct permissions for sudoers file
       tags:
         - always
-        - default
+        - base
 
     - name: Change ownership of /actions-runner and /opt/hostedtoolcache
       ansible.builtin.file:
@@ -246,7 +246,7 @@
         - /opt/hostedtoolcache
       tags:
         - always
-        - default
+        - base
 
     - name: Include install_terraform.yaml tasks
       ansible.builtin.include_tasks: install_terraform.yaml
