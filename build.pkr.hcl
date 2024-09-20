@@ -31,10 +31,6 @@ variable repository_uri {
   type = string
 }
 
-variable ansible_tag {
-  type = string
-}
-
 variable terraform_version {
   type = string
 }
@@ -75,7 +71,6 @@ build {
     playbook_file = "github_runner.yaml"
     extra_arguments = [
       "--extra-vars",
-      "--tags ${var.ansible_tag}",
       "-e terraform_version=${var.terraform_version}"
     ]
   }
@@ -83,7 +78,7 @@ build {
   post-processors {
     post-processor "docker-tag" {
       repository = var.repository_uri
-      tags       = ["${var.tag}-${var.ansible_tag}"]
+      tags       = ["${var.tag}"]
     }
 
     post-processor "docker-push" {
