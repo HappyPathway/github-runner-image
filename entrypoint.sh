@@ -2,7 +2,7 @@
 set -e
 
 echo "Setting PATH to include /actions-runner"
-export PATH="$PATH:/actions-runner"
+export PATH="$PATH:/home/actions"
 
 echo "Generating Random Suffix..."
 suffix=$(cat /proc/sys/kernel/random/uuid | awk -F'-' '{ print $1 }')
