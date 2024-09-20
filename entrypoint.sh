@@ -49,8 +49,13 @@ if [ -n "${RUNNER_GROUP}" ]; then
   command="${command} --runnergroup ${RUNNER_GROUP}"
 fi
 
+if [ -n "${EPHEMERAL}" ]; then
+  echo "Adding EPHEMERAL to config command"
+  command="${command} --ephemeral"
+fi
+
 echo "Adding labels, disableupdate, work directory, and replace options to config command"
-command="${command} --labels ${RUNNER_LABELS} --disableupdate --work /actions-runner/_work --replace"
+command="${command} --labels ${RUNNER_LABELS} --disableupdate --work /home/actions/_work --replace"
 
 echo "Configuring GitHub runner with token..."
 eval ${command}
