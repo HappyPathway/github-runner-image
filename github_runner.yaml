@@ -45,6 +45,7 @@
           - libunwind8
           - libyaml-dev
           - locales
+          - openssh-client
           - python3-pip
           - rsync
           - supervisor
