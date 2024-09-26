@@ -37,6 +37,17 @@ AGENT_TOOLSDIRECTORY=/opt/hostedtoolscache
 echo NODE_TLS_REJECT_UNAUTHORIZED=0 >> /home/actions/.env
 echo LANG=en_US.UTF-8 >> /home/actions/.env
 
+echo Setting Proxy Vars
+if [ -n "${HTTP_PROXY}" ]; then
+  echo HTTP_PROXY=${HTTP_PROXY} >> /home/actions/.env
+fi
+if [ -n "${HTTPS_PROXY}" ]; then
+  echo HTTP_PROXY=${HTTPS_PROXY} >> /home/actions/.env
+fi
+if [ -n "${NO_PROXY}" ]; then
+  echo NO_PROXY=${NO_PROXY} >> /home/actions/.env
+fi
+
 echo "Changing directory to /home/actions"
 cd /home/actions
 
