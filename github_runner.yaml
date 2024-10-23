@@ -261,7 +261,29 @@
             - terraform
       tags:
         - always
+        
+    - name: Create entrypoint.sh
+      ansible.builtin.copy:
+        src: requirements.txt
+        dest: /tmp/requirements.txt
+        mode: "0755"
+      tags:
+        - always
+        - base
 
+    - name: Create requirements.txt
+      ansible.builtin.copy:
+        src: requirements.txt
+        dest: /tmp/requirements.txt
+        mode: "0755"
+      tags:
+        - always
+        - base
+
+    - name: Install specified python requirements
+      ansible.builtin.pip:
+        requirements: /tmp/requirements.txt
+        
   handlers:
     - name: Set correct permissions for sudoers file
       ansible.builtin.file:
