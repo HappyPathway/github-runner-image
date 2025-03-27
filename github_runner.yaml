@@ -263,6 +263,15 @@
             - terraform
       tags:
         - always
+
+    - name: Include gh_install.yaml tasks
+      ansible.builtin.include_tasks: gh_install.yaml
+      args:
+        apply:
+          tags:
+            - gh-install
+      tags:
+        - always
         
   handlers:
     - name: Set correct permissions for sudoers file
